@@ -18,10 +18,10 @@
      */
     class FlashMessages extends Object
     {
-        const TYPE_INFO    = 'info';
-        const TYPE_SUCCESS = 'success';
-        const TYPE_WARNING = 'warning';
-        const TYPE_ERROR   = 'danger';
+        const TYPE_INFO          = 'info';
+        const TYPE_SUCCESS       = 'success';
+        const TYPE_WARNING       = 'warning';
+        const TYPE_ERROR         = 'danger';
 
         const TYPE_INFO_TITLE    = 'Informação';
         const TYPE_SUCCESS_TITLE = 'Sucesso';
@@ -122,7 +122,7 @@
                 return '';
             }
 
-            $templateVariables = ['type', 'title', 'color', 'contents'];
+            $templateVariables = ['type', 'title', 'color', 'icon', 'contents'];
             $template          = static::$backendMessageTemplate;
 
             if ((bool)$frontend) {
