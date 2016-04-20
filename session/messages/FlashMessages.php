@@ -13,8 +13,9 @@
      *
      * @package          nox\session\messages
      *
-     * @todo-project     Adicionar, quando necessário, o campo o nome do atributo que disparou o erro.
-     * @todo-project     Criar forma de sobrepor o título da mensagem.
+     * @todo             Adicionar, quando necessário, o campo o nome do atributo que disparou o erro.
+     * @todo             Criar forma de sobrepor o título da mensagem.
+     * @todo             Os itens que hoje são constantes devem ser atributos.
      */
     class FlashMessages extends Object
     {
