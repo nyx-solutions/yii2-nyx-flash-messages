@@ -8,14 +8,11 @@
     /**
      * Class FlashMessages
      *
-     * @category         Flash Messages
-     * @author           Jonatas Sas <atendimento@jsas.com.br>
+     * @category Flash Messages
+     * @author   Jonatas Sas
      *
-     * @package          nox\session\messages
+     * @package  nox\session\messages
      *
-     * @todo             Adicionar, quando necessário, o campo o nome do atributo que disparou o erro.
-     * @todo             Criar forma de sobrepor o título da mensagem.
-     * @todo             Os itens que hoje são constantes devem ser atributos.
      */
     class FlashMessages extends Object
     {
@@ -24,40 +21,35 @@
         const TYPE_WARNING       = 'warning';
         const TYPE_ERROR         = 'danger';
 
-        const TYPE_INFO_TITLE    = 'Informação';
-        const TYPE_SUCCESS_TITLE = 'Sucesso';
-        const TYPE_WARNING_TITLE = 'Atenção';
-        const TYPE_ERROR_TITLE   = 'Erro';
-
-        const TYPE_INFO_COLOR    = '#31708f';
-        const TYPE_SUCCESS_COLOR = '#3c763d';
-        const TYPE_WARNING_COLOR = '#8a6d3b';
-        const TYPE_ERROR_COLOR   = '#a94442';
-
-        const TYPE_INFO_CLASS    = 'info';
-        const TYPE_SUCCESS_CLASS = 'success';
-        const TYPE_WARNING_CLASS = 'warning';
-        const TYPE_ERROR_CLASS   = 'danger';
-
-        const TYPE_ICON_ERROR    = '@images/ico-ball-error.png';
-        const TYPE_ICON_WARNING  = '@images/ico-ball-warning.png';
-        const TYPE_ICON_SUCCESS  = '@images/ico-ball-success.png';
-        const TYPE_ICON_INFO     = '@images/ico-ball-info.png';
+        /**
+         * @var array
+         */
+        protected static $titles = [
+            self::TYPE_INFO    => 'Informação',
+            self::TYPE_SUCCESS => 'Sucesso',
+            self::TYPE_WARNING => 'Atenção',
+            self::TYPE_ERROR   => 'Erro'
+        ];
 
         /**
-         * @var bool
+         * @var array
          */
-        public $hasMessage = false;
+        protected static $colors = [
+            self::TYPE_INFO    => '#31708f',
+            self::TYPE_SUCCESS => '#3c763d',
+            self::TYPE_WARNING => '#8a6d3b',
+            self::TYPE_ERROR   => '#a94442'
+        ];
 
         /**
-         * @var string
+         * @var array
          */
-        public $type = self::TYPE_INFO;
-
-        /**
-         * @var string
-         */
-        public $message = '';
+        protected static $classes = [
+            self::TYPE_INFO    => 'info',
+            self::TYPE_SUCCESS => 'success',
+            self::TYPE_WARNING => 'warning',
+            self::TYPE_ERROR   => 'danger'
+        ];
 
         /**
          * @var string
@@ -91,15 +83,10 @@
          */
         public static function write($type, $messages, $frontend = false, $forceNoList = true)
         {
-            $title    = self::getTitle($type);
-            $icon     = '';
-            $color    = self::getColor($type);
+            $title    = static::getTitle($type);
+            $color    = static::getColor($type);
             $contents = '';
             $useList  = false;
-
-            if ($frontend) {
-                $icon = Yii::getAlias(self::getIcon($type));
-            }
 
             if (!is_array($messages)) {
                 return '';
@@ -123,7 +110,7 @@
                 return '';
             }
 
-            $templateVariables = ['type', 'title', 'color', 'icon', 'contents'];
+            $templateVariables = ['type', 'title', 'color', 'contents'];
             $template          = static::$backendMessageTemplate;
 
             if ((bool)$frontend) {
@@ -150,57 +137,27 @@
          *
          * @return string
          */
-        public static function getIcon($type = self::TYPE_INFO)
-        {
-            switch ($type) {
-                case self::TYPE_INFO: {
-                    return self::TYPE_ICON_INFO;
-                }
-
-                case self::TYPE_WARNING: {
-                    return self::TYPE_ICON_WARNING;
-                }
-
-                case self::TYPE_SUCCESS: {
-                    return self::TYPE_ICON_SUCCESS;
-                }
-
-                case self::TYPE_ERROR: {
-                    return self::TYPE_ICON_ERROR;
-                }
-
-                default: {
-                    return self::TYPE_ICON_INFO;
-                }
-            }
-        }
-
-        /**
-         * @param string $type
-         *
-         * @return string
-         */
         public static function getTitle($type)
         {
             switch ($type) {
                 case self::TYPE_INFO: {
-                    return self::TYPE_INFO_TITLE;
+                    return static::$titles[self::TYPE_INFO];
                 }
 
                 case self::TYPE_SUCCESS: {
-                    return self::TYPE_SUCCESS_TITLE;
+                    return static::$titles[self::TYPE_SUCCESS];
                 }
 
                 case self::TYPE_WARNING: {
-                    return self::TYPE_WARNING_TITLE;
+                    return static::$titles[self::TYPE_WARNING];
                 }
 
                 case self::TYPE_ERROR: {
-                    return self::TYPE_ERROR_TITLE;
+                    return static::$titles[self::TYPE_ERROR];
                 }
 
                 default: {
-                    return self::TYPE_INFO_TITLE;
+                    return static::$titles[self::TYPE_INFO];
                 }
             }
         }
@@ -214,23 +171,23 @@
         {
             switch ($type) {
                 case self::TYPE_INFO: {
-                    return self::TYPE_INFO_COLOR;
+                    return static::$colors[self::TYPE_INFO];
                 }
 
                 case self::TYPE_SUCCESS: {
-                    return self::TYPE_SUCCESS_COLOR;
+                    return static::$colors[self::TYPE_SUCCESS];
                 }
 
                 case self::TYPE_WARNING: {
-                    return self::TYPE_WARNING_COLOR;
+                    return static::$colors[self::TYPE_WARNING];
                 }
 
                 case self::TYPE_ERROR: {
-                    return self::TYPE_ERROR_COLOR;
+                    return static::$colors[self::TYPE_ERROR];
                 }
 
                 default: {
-                    return self::TYPE_INFO_COLOR;
+                    return static::$colors[self::TYPE_INFO];
                 }
             }
         }
@@ -260,7 +217,7 @@
          */
         public static function getFlashMessage($frontend = false)
         {
-            $type = self::hasFlashMessage();
+            $type = static::hasFlashMessage();
 
             if ($type !== false) {
                 /** @var static[] $flashMessages */
@@ -306,5 +263,56 @@
         public static function removeAllFlashMessages()
         {
             Yii::$app->session->removeAllFlashes();
+        }
+
+        /**
+         * @param string $type
+         * @param string $color
+         *
+         * @return bool
+         */
+        public static function changeColor($type, $color)
+        {
+            if (isset(static::$colors[$type])) {
+                static::$colors[$type] = $color;
+
+                return true;
+            }
+
+            return false;
+        }
+
+        /**
+         * @param string $type
+         * @param string $title
+         *
+         * @return bool
+         */
+        public static function changeTitle($type, $title)
+        {
+            if (isset(static::$titles[$type])) {
+                static::$titles[$type] = $title;
+
+                return true;
+            }
+
+            return false;
+        }
+
+        /**
+         * @param string $type
+         * @param string $class
+         *
+         * @return bool
+         */
+        public static function changeClass($type, $class)
+        {
+            if (isset(static::$classes[$type])) {
+                static::$classes[$type] = $class;
+
+                return true;
+            }
+
+            return false;
         }
     }
