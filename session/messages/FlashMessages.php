@@ -3,7 +3,7 @@
     namespace nox\session\messages;
 
     use Yii;
-    use yii\base\Object;
+    use yii\base\BaseObject;
 
     /**
      * Class FlashMessages
@@ -14,17 +14,17 @@
      * @package  nox\session\messages
      *
      */
-    class FlashMessages extends Object
+    class FlashMessages extends BaseObject
     {
-        const TYPE_INFO          = 'info';
-        const TYPE_SUCCESS       = 'success';
-        const TYPE_WARNING       = 'warning';
-        const TYPE_ERROR         = 'danger';
+        const TYPE_INFO    = 'info';
+        const TYPE_SUCCESS = 'success';
+        const TYPE_WARNING = 'warning';
+        const TYPE_ERROR   = 'danger';
 
         /**
          * @var array
          */
-        protected static $titles = [
+        protected static array $titles = [
             self::TYPE_INFO    => 'Informação',
             self::TYPE_SUCCESS => 'Sucesso',
             self::TYPE_WARNING => 'Atenção',
@@ -34,7 +34,7 @@
         /**
          * @var array
          */
-        protected static $colors = [
+        protected static array $colors = [
             self::TYPE_INFO    => '#31708f',
             self::TYPE_SUCCESS => '#3c763d',
             self::TYPE_WARNING => '#8a6d3b',
@@ -44,7 +44,7 @@
         /**
          * @var array
          */
-        protected static $classes = [
+        protected static array $classes = [
             self::TYPE_INFO    => 'info',
             self::TYPE_SUCCESS => 'success',
             self::TYPE_WARNING => 'warning',
@@ -54,7 +54,7 @@
         /**
          * @var string
          */
-        public static $frontendMessageTemplate /** @lang HTML */ = '<div class="alert alert-{type}" role="alert">
+        public static string $frontendMessageTemplate /** @lang HTML */ = '<div class="alert alert-{type}" role="alert">
     <h3 class="text-left text-uppercase" style="margin:0 0 5px -1px;">{title}</h3>
     <blockquote style="margin:0;border-left:5px solid {color};">
         {contents}
@@ -65,7 +65,7 @@
         /**
          * @var string
          */
-        public static $backendMessageTemplate /** @lang HTML */ = '<div class="alert alert-{type}" role="alert">
+        public static string $backendMessageTemplate /** @lang HTML */ = '<div class="alert alert-{type}" role="alert">
     <h3 class="text-left text-uppercase" style="margin:0 0 5px -1px;">{title}</h3>
     <blockquote style="margin:0;border-left:5px solid {color};">
         {contents}
@@ -80,6 +80,8 @@
          * @param bool     $forceNoList
          *
          * @return string
+         *
+         * @noinspection PhpUnusedLocalVariableInspection
          */
         public static function write($type, $messages, $frontend = false, $forceNoList = true)
         {
@@ -118,7 +120,7 @@
             }
 
             foreach ($templateVariables as $variable) {
-                $template = preg_replace("/\{{$variable}\}/", $$variable, $template);
+                $template = preg_replace('/{'.$variable.'}/', $$variable, $template);
             }
 
             return $template;
@@ -140,10 +142,6 @@
         public static function getTitle($type)
         {
             switch ($type) {
-                case self::TYPE_INFO: {
-                    return static::$titles[self::TYPE_INFO];
-                }
-
                 case self::TYPE_SUCCESS: {
                     return static::$titles[self::TYPE_SUCCESS];
                 }
@@ -156,6 +154,7 @@
                     return static::$titles[self::TYPE_ERROR];
                 }
 
+                case self::TYPE_INFO:
                 default: {
                     return static::$titles[self::TYPE_INFO];
                 }
@@ -170,10 +169,6 @@
         public static function getColor($type)
         {
             switch ($type) {
-                case self::TYPE_INFO: {
-                    return static::$colors[self::TYPE_INFO];
-                }
-
                 case self::TYPE_SUCCESS: {
                     return static::$colors[self::TYPE_SUCCESS];
                 }
@@ -186,6 +181,7 @@
                     return static::$colors[self::TYPE_ERROR];
                 }
 
+                case self::TYPE_INFO:
                 default: {
                     return static::$colors[self::TYPE_INFO];
                 }
