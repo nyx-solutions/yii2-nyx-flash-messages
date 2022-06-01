@@ -1,6 +1,6 @@
 <?php
 
-    namespace nox\session\messages;
+    namespace nyx\session\messages;
 
     use Yii;
     use yii\base\BaseObject;
@@ -11,7 +11,7 @@
      * @category Flash Messages
      * @author   Jonatas Sas
      *
-     * @package  nox\session\messages
+     * @package  nyx\session\messages
      *
      */
     class FlashMessages extends BaseObject
