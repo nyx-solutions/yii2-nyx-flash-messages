@@ -1,7 +1,7 @@
-Yii PHP Framework Version 2 / NOX Flash Messages
+Yii PHP Framework Version 2 / NYX Flash Messages
 ================================================
 
-Yii2 NOX Flash Messages is a library with useful methods for system messages for Framework Yii2.
+Yii2 NYX Flash Messages is a library with useful methods for system messages for Framework Yii2.
 
 [![Latest Stable Version](https://poser.pugx.org/nyx-solutions/yii2-nyx-flash-messages/v/stable)](https://packagist.org/packages/nyx-solutions/yii2-nyx-flash-messages)
 [![Total Downloads](https://poser.pugx.org/nyx-solutions/yii2-nyx-flash-messages/downloads)](https://packagist.org/packages/nyx-solutions/yii2-nyx-flash-messages)
