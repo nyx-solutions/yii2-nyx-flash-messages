@@ -6,20 +6,14 @@
     use yii\base\BaseObject;
 
     /**
-     * Class FlashMessages
-     *
-     * @category Flash Messages
-     * @author   Jonatas Sas
-     *
-     * @package  nyx\session\messages
-     *
+     * Flash Messages
      */
     class FlashMessages extends BaseObject
     {
-        const TYPE_INFO    = 'info';
-        const TYPE_SUCCESS = 'success';
-        const TYPE_WARNING = 'warning';
-        const TYPE_ERROR   = 'danger';
+        public const TYPE_INFO    = 'info';
+        public const TYPE_SUCCESS = 'success';
+        public const TYPE_WARNING = 'warning';
+        public const TYPE_ERROR   = 'danger';
 
         /**
          * @var array
@@ -74,36 +68,37 @@
 </div>';
 
         /**
-         * @param string   $type
-         * @param static[] $messages
-         * @param bool     $frontend
-         * @param bool     $forceNoList
+         * @param string      $type
+         * @param array|mixed $messages
+         * @param bool        $frontend
+         * @param bool        $forceNoList
          *
          * @return string
          *
          * @noinspection PhpUnusedLocalVariableInspection
          */
-        public static function write($type, $messages, $frontend = false, $forceNoList = true)
+        public static function write(string $type, mixed $messages, bool $frontend = false, bool $forceNoList = true): string
         {
             $title    = static::getTitle($type);
             $color    = static::getColor($type);
             $contents = '';
             $useList  = false;
 
-            if (!is_array($messages)) {
-                return '';
-            } else {
+            if (is_array($messages)) {
                 if (count($messages) > 1) {
-                    $useList = (((bool)$forceNoList) ? false : true);
+                    $useList = !$forceNoList;
                 }
 
                 foreach ($messages as $line) {
-                    if (!$line instanceof static) {
+                    if (!$line instanceof static || property_exists($line, 'message')) {
                         continue;
                     }
 
+                    /** @noinspection PhpUndefinedFieldInspection */
                     $contents .= (($useList) ? '<li style="font-size:14px;font-weight:normal;"><span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span> ' : '').$line->message.(($useList) ? '</li>' : '');
                 }
+            } else {
+                return '';
             }
 
             if (!empty($contents)) {
@@ -115,7 +110,7 @@
             $templateVariables = ['type', 'title', 'color', 'contents'];
             $template          = static::$backendMessageTemplate;
 
-            if ((bool)$frontend) {
+            if ($frontend) {
                 $template = static::$frontendMessageTemplate;
             }
 
@@ -129,7 +124,7 @@
         /**
          * @return array
          */
-        public static function getAvailableTypes()
+        public static function getAvailableTypes(): array
         {
             return [self::TYPE_INFO, self::TYPE_SUCCESS, self::TYPE_WARNING, self::TYPE_ERROR];
         }
@@ -139,7 +134,7 @@
          *
          * @return string
          */
-        public static function getTitle($type)
+        public static function getTitle(string $type): string
         {
             switch ($type) {
                 case self::TYPE_SUCCESS: {
@@ -166,7 +161,7 @@
          *
          * @return string
          */
-        public static function getColor($type)
+        public static function getColor(string $type): string
         {
             switch ($type) {
                 case self::TYPE_SUCCESS: {
@@ -191,19 +186,25 @@
         /**
          * @return bool|string
          */
-        public static function hasFlashMessage()
+        public static function hasFlashMessage(): bool|string
         {
             if (Yii::$app->session->hasFlash(self::TYPE_ERROR)) {
                 return self::TYPE_ERROR;
-            } elseif (Yii::$app->session->hasFlash(self::TYPE_WARNING)) {
-                return self::TYPE_WARNING;
-            } elseif (Yii::$app->session->hasFlash(self::TYPE_SUCCESS)) {
-                return self::TYPE_SUCCESS;
-            } elseif (Yii::$app->session->hasFlash(self::TYPE_INFO)) {
-                return self::TYPE_INFO;
-            } else {
-                return false;
             }
+
+            if (Yii::$app->session->hasFlash(self::TYPE_WARNING)) {
+                return self::TYPE_WARNING;
+            }
+
+            if (Yii::$app->session->hasFlash(self::TYPE_SUCCESS)) {
+                return self::TYPE_SUCCESS;
+            }
+
+            if (Yii::$app->session->hasFlash(self::TYPE_INFO)) {
+                return self::TYPE_INFO;
+            }
+
+            return false;
         }
 
         /**
@@ -211,7 +212,7 @@
          *
          * @return void
          */
-        public static function getFlashMessage($frontend = false)
+        public static function getFlashMessage(bool $frontend = false): void
         {
             $type = static::hasFlashMessage();
 
@@ -230,13 +231,13 @@
          *
          * @return void
          */
-        public static function addFlashMessage($type = self::TYPE_INFO, $message = '', $singleMessage = false)
+        public static function addFlashMessage(string $type = self::TYPE_INFO, string $message = '', bool $singleMessage = false): void
         {
             if ($singleMessage) {
                 Yii::$app->session->removeAllFlashes();
             }
 
-            Yii::$app->session->addFlash($type, new static(['type' => $type, 'message' => $message]));
+            Yii::$app->session->addFlash($type, new static(compact('type', 'message')));
         }
 
         /**
@@ -248,7 +249,7 @@
          *
          * @depracted
          */
-        public static function setFlashMessage($type = self::TYPE_INFO, $message = '', $singleMessage = false)
+        public static function setFlashMessage(string $type = self::TYPE_INFO, string $message = '', bool $singleMessage = false): void
         {
             static::addFlashMessage($type, $message, $singleMessage);
         }
@@ -256,7 +257,7 @@
         /**
          * @return void
          */
-        public static function removeAllFlashMessages()
+        public static function removeAllFlashMessages(): void
         {
             Yii::$app->session->removeAllFlashes();
         }
@@ -267,7 +268,7 @@
          *
          * @return bool
          */
-        public static function changeColor($type, $color)
+        public static function changeColor(string $type, string $color): bool
         {
             if (isset(static::$colors[$type])) {
                 static::$colors[$type] = $color;
@@ -284,7 +285,7 @@
          *
          * @return bool
          */
-        public static function changeTitle($type, $title)
+        public static function changeTitle(string $type, string $title): bool
         {
             if (isset(static::$titles[$type])) {
                 static::$titles[$type] = $title;
@@ -301,7 +302,7 @@
          *
          * @return bool
          */
-        public static function changeClass($type, $class)
+        public static function changeClass(string $type, string $class): bool
         {
             if (isset(static::$classes[$type])) {
                 static::$classes[$type] = $class;
